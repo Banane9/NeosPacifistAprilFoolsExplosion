@@ -21,13 +21,17 @@ namespace PacifistAprilFoolsExplosion
         private const string explosionSlotName = "Explosion";
 
         [AutoRegisterConfigKey]
+        private static ModConfigurationKey<bool> DisableExplosion = new ModConfigurationKey<bool>("DisableExplosion", "Disable the Violent Explosion component locally when it's loaded.", () => true);
+
+        /*
+        [AutoRegisterConfigKey]
         private static ModConfigurationKey<bool> HideFlames = new ModConfigurationKey<bool>("HideFlames", "Hide the Violent Explosion's flame particles.", () => true);
 
         [AutoRegisterConfigKey]
         private static ModConfigurationKey<bool> MuteBloating = new ModConfigurationKey<bool>("MuteBloating", "Mute the Violent Explosion's bloating sound effect.", () => false);
 
         [AutoRegisterConfigKey]
-        private static ModConfigurationKey<bool> MuteExplosion = new ModConfigurationKey<bool>("MuteExplosion", "Mute the Violent Explosion's explosion sound effect.", () => true);
+        private static ModConfigurationKey<bool> MuteExplosion = new ModConfigurationKey<bool>("MuteExplosion", "Mute the Violent Explosion's explosion sound effect.", () => true);*/
 
         public override string Author => "Banane9";
         public override string Link => "https://github.com/Banane9/NeosPacifistAprilFoolsExplosion";
@@ -49,7 +53,7 @@ namespace PacifistAprilFoolsExplosion
             [HarmonyPatch("OnAwake")]
             private static void OnAwakePostfix(ViolentAprilFoolsExplosion __instance)
             {
-                __instance.RunInUpdates(2, () => __instance.Enabled = false);
+                __instance.RunInUpdates(2, () => ValueUserOverride.OverrideForUser(__instance.EnabledField, __instance.World.LocalUser, !Config.GetValue(DisableExplosion)));
             }
         }
 
